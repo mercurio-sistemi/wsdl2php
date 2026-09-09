@@ -33,11 +33,6 @@
       "GoetasWebservices\\Xsd\\XsdToPhp\\Tests\\": "vendor/goetas-webservices/xsd2php/tests"
     }
   },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "0.5-dev"
-    }
-  },
   "bin": [
     "bin/wsdl2php"
   ]
