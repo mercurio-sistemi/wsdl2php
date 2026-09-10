@@ -3,11 +3,13 @@ namespace GoetasWebservices\WsdlToPhp\Tests;
 
 use GoetasWebservices\WsdlToPhp\Generation\JmsSoapConverter;
 use GoetasWebservices\WsdlToPhp\Generation\PhpSoapConverter;
+use GoetasWebservices\WsdlToPhp\Generation\ValidatorSoapConverter;
 use GoetasWebservices\XML\SOAPReader\Soap\Service;
 use GoetasWebservices\XML\SOAPReader\SoapReader;
 use GoetasWebservices\XML\WSDLReader\DefinitionsReader;
 use GoetasWebservices\XML\XSDReader\SchemaReader;
 use GoetasWebservices\Xsd\XsdToPhp\Jms\YamlConverter;
+use GoetasWebservices\Xsd\XsdToPhp\Jms\YamlValidatorConverter;
 use GoetasWebservices\Xsd\XsdToPhp\Php\PhpConverter;
 use GoetasWebservices\Xsd\XsdToPhp\Tests\AbstractGenerator;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -37,8 +39,9 @@ class Generator extends AbstractGenerator
 
         $php = $this->generatePHPFiles($schemas, $services);
         $jms = $this->generateJMSFiles($schemas, $services);
+        $validation = $this->generateValidationFiles($schemas, $services);
 
-        return [$php, $jms];
+        return [$php, $jms, $validation];
     }
 
     public function generate(array $files, $servicePortNames = array(), $knownLocations = array())
@@ -68,6 +71,17 @@ class Generator extends AbstractGenerator
     {
         $converter = new YamlConverter($this->namingStrategy);
         $soapConverter = new JmsSoapConverter($converter);
+
+        $this->setNamespaces($converter);
+        $items = $converter->convert($schemas);
+        $items = array_merge($items, $soapConverter->visitServices($services));
+        return $items;
+    }
+
+    protected function generateValidationFiles(array $schemas, array $services)
+    {
+        $converter = new YamlValidatorConverter($this->namingStrategy);
+        $soapConverter = new ValidatorSoapConverter($converter);
 
         $this->setNamespaces($converter);
         $items = $converter->convert($schemas);

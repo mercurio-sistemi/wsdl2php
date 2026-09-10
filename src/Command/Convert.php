@@ -40,8 +40,12 @@ class Convert extends XsdToPhpConvert
 
         $soapReader = $this->container->get('goetas_webservices.wsdl2php.soap_reader');
 
+        $configs = $this->container->getParameter('goetas_webservices.xsd2php.config');
 
-        foreach (['php', 'jms'] as $type) {
+        foreach (['php', 'jms', 'validation'] as $type) {
+            if ($type === 'validation' && empty($configs['destinations_' . $type])) {
+                continue;
+            }
             $converter = $this->container->get('goetas_webservices.xsd2php.converter.' . $type);
             $wsdlConverter = $this->container->get('goetas_webservices.wsdl2php.converter.' . $type);
             $items = $wsdlConverter->visitServices($soapReader->getServices());
