@@ -23,6 +23,9 @@
         <service id="goetas_webservices.wsdl2php.converter.jms" class="GoetasWebservices\WsdlToPhp\Generation\JmsSoapConverter"  public="true">
             <argument id="goetas_webservices.xsd2php.converter.jms" type="service"/>
         </service>
+        <service id="goetas_webservices.wsdl2php.converter.validation" class="GoetasWebservices\WsdlToPhp\Generation\ValidatorSoapConverter"  public="true">
+            <argument id="goetas_webservices.xsd2php.converter.validation" type="service"/>
+        </service>
 
 
     </services>
